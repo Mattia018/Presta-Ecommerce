@@ -1,0 +1,16 @@
+<div *ngIf="order; else loading" class="  mt-lg-5  shadow-lg order-confirmation-elegant mb-5">
+  <h2 class="h1 mt-2">Order Confirmation</h2>  
+  <h3 class="h2">Products:</h3>
+  <ul>
+    <li *ngFor="let item of order.content[0].items" class="product-item-elegant">      
+      <span class="product-title">{{ item.product.title }}</span>
+      <span class="product-details">Quantity: {{ item.quantity }} - Price: {{ item.product.price | currency }}</span>
+    </li>
+  </ul>
+  <p>Total: {{ order.content[0].totalPrice | currency }}</p>
+  <button (click)="proceedToPayment()" class="btn btn-primary-elegant">Pay with Stripe <b class="fa fa-arrow-right m-md-1"></b></button>
+</div>
+
+<ng-template #loading>
+  <p>Loading order details...</p>
+</ng-template>

@@ -1,0 +1,97 @@
+<div class="container mt-5 p-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-white text-center py-4">
+          <h2 class="mb-0">Register</h2>
+          <p class="mb-0">Create new account</p>
+        </div>
+        <div class="card-body p-4">
+          <form (ngSubmit)="register()">
+            <!-- Campo Username -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Username</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
+                <input type="text" class="form-control" id="username" [(ngModel)]="user.username" name="username" required />
+              </div>
+            </div>
+
+            <!-- Campo Nome -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
+                <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" required />
+              </div>
+            </div>
+
+            <!-- Campo Cognome -->
+            <div class="mb-3">
+              <label for="surname" class="form-label">Surname</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
+                <input type="text" class="form-control" id="surname" [(ngModel)]="user.surname" name="surname" required />
+              </div>
+            </div>
+
+            <!-- Campo Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <input 
+                      type="email" 
+                      class="form-control" 
+                      id="email" 
+                      [(ngModel)]="user.email" 
+                      name="email" 
+                      pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" 
+                      required 
+                      #email="ngModel"
+                    />
+              </div>
+            </div>
+
+            <!-- Messaggio di errore se l'email non è valida -->
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
+              <small *ngIf="email.errors?.['required']">Email is required</small>
+              <small *ngIf="email.errors?.['pattern']">{{errorMessage}}</small>
+            </div>
+
+            <!-- Campo Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </span>
+                <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" required />
+              </div>
+            </div>
+
+            <!-- Pulsante Register -->
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="!user.email || !user.password">
+                <i class="fas fa-user-plus me-2"></i> Register
+              </button>
+            </div>
+          </form>
+
+          <!-- Link per il login -->
+          <div class="text-center mt-3">
+            <p class="mb-0">Do you already have account? <a [routerLink]="'/login'" class="text-primary">Login</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

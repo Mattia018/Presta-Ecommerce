@@ -1,0 +1,137 @@
+  <!-- Header -->
+   
+  <nav class=" navbar-main navbar navbar-expand-lg navbar-light shadow fixed-top ">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="navbar-brand text-success logo h1 align-self-center" [routerLink]="'/home'">
+        Presta Shop
+      </a>
+  
+      <!-- Bottone per il menu mobile -->
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <!-- Contenuto della navbar -->
+      <div class="align-self-center collapse navbar-collapse flex-fill d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+        <div class="flex-fill">
+          <ul class="nav navbar-nav d-flex justify-content-center  mx-lg-auto">
+                       
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'/shop'">Shop</a>
+            </li>            
+          </ul>
+        </div>
+  
+        <!-- Sezione destra della navbar -->
+        <div class="navbar align-self-center d-flex">         
+  
+          
+  
+        <!-- Icona del carrello -->
+        <div class="nav-item">
+          <a class="nav-icon position-relative text-decoration-none" (click)="toggleCart()">
+            <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1 cart-icon"></i>
+            <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">{{ totalItems }}</span>
+          </a>
+
+          <!-- Off-canvas carrello -->
+          <div class="cart-offcanvas" [ngClass]="{'open': isCartOpen}">
+            <div class="cart-header">
+              <h5>Cart</h5>
+              <button class="btn-close" (click)="toggleCart()"></button>
+            </div>
+            <div class="cart-body">
+              <div *ngIf="cart">
+                
+                <div *ngIf="cart.items.length === 0" class="empty-cart-message">
+                  <p>Empty Cart</p>
+                </div>
+                
+
+                <!-- Lista degli elementi nel carrello -->
+                <div *ngFor="let item of cart.items" class="cart-item">
+                  <!-- Controllo per l'immagine -->
+                  <div *ngIf="item.product.imgResources; else noImage">
+                    <img [src]="item.product.imgResources" alt="{{ item.product.title }}" class="cart-item-image">
+                  </div>
+                  <ng-template #noImage>
+                    <div class="no-image-placeholder">
+                      <i class="fas fa-image"></i>
+                    </div>
+                  </ng-template>
+
+                  <div class="cart-item-details">
+                    <h6>{{ item.product.title }}</h6>
+                    <p>{{ item.quantity }} <b>x</b> {{ item.product.price | currency }}</p>
+                    <div class="cart-item-actions">
+                      <!-- pulsante "trash" solo se la quantità è 1 -->
+                      <button *ngIf="item.quantity === 1" 
+                              class="btn btn-sm btn-outline-secondary border-btn" 
+                              style="opacity: 0.7;" 
+                              (click)="removeProductFromCart(item.product.sequId, item.quantity)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                  
+                      <!-- pulsante "-" solo se la quantità è maggiore di 1 -->
+                      <button *ngIf="item.quantity > 1" 
+                              class="btn btn-sm btn-outline-secondary border-btn" 
+                              (click)="updateQuantity(item.product.sequId, item.quantity - 1)">
+                        <i class="fa fa-minus-square "></i>
+                      </button>
+                  
+                      <!-- Pulsante "+" -->
+                      <button class="btn btn-sm btn-outline-secondary border-btn" 
+                              (click)="updateQuantity(item.product.sequId, item.quantity + 1)">
+                        <i class="fa fa-plus-square"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="cart-footer">
+              <strong class="h4">Total: {{ totalPrice | currency }}</strong>
+              <button class="btn btn-success w-100" (click)="goToCheckout()">Checkout</button>
+            </div>
+          </div>
+        </div>
+  
+          <!-- Menu a tendina per l'utente -->
+          <div class="nav-item dropdown" ngbDropdown>
+            <a class="nav-icon position-relative text-decoration-none dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa fa-fw fa-user text-dark mr-3"></i>
+              <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"></span>
+            </a>
+            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="navbarDropdown">
+              <!-- Mostra Login e Register solo se l'utente non è loggato -->
+              <li *ngIf="!isLoggedIn">
+                <a class="dropdown-item" routerLink="/login">Login</a>
+              </li>
+              <li *ngIf="!isLoggedIn">
+                <a class="dropdown-item" routerLink="/register">Register</a>
+              </li>
+          
+              <!-- Mostra Logout, My Profile e Orders se l'utente è loggato come USER -->
+              <li *ngIf="isLoggedIn">
+                <a class="dropdown-item " style="cursor: pointer;" (click)="logout()">Logout</a>
+              </li>
+              <li *ngIf="isLoggedIn">
+                <a class="dropdown-item" routerLink="/profile">My Profile</a>
+              </li>
+              <li *ngIf="isLoggedIn">
+                <a class="dropdown-item" routerLink="/orders">Orders</a>
+              </li>
+          
+              <!-- Mostra Admin Dashboard se l'utente è loggato come ADMIN -->
+              <li *ngIf="authService.isAdmin()">
+                <a class="dropdown-item" routerLink="/admin">Admin Dashboard</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+ 

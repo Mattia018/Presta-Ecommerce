@@ -1,0 +1,139 @@
+<section class="bg-light">
+    <div class="container pb-5">
+      <div class="row d-flex align-items-stretch">
+
+        <!-- Colonna sinistra: Immagini e carosello -->
+        <div class="col-lg-5 mt-5">
+
+            <!-- Card principale  -->
+            <div class="card mb-3">
+                <img
+                class="card-img img-fluid"
+                [src]="selectedImage || product?.imgResources"
+                id="product-detail"
+                (mousemove)="onMouseMove($event)"
+                (mouseenter)="showZoom = true"
+                (mouseleave)="onMouseLeave(); showZoom = false"
+              />
+
+              <!-- Overlay per lo zoom -->
+                <div
+                *ngIf="showZoom"
+                class="zoom-overlay"
+                [ngStyle]="{
+                    top: overlayPosition.y + 'px',
+                    left: overlayPosition.x + 'px'
+                }"
+                ></div>
+              
+
+            </div>
+          
+            <div class="row">              
+          
+              <!-- Carosello -->
+              <div id="multi-item-example" class="carousel slide carousel-multi-item" data-bs-ride="carousel" data-bs-interval="3000">
+                <!-- Slide del carosello -->
+                <div class="carousel-inner product-links-wap" role="listbox">
+                  <!-- Prima slide -->
+                  <div class="carousel-item active">
+                    <div class="row">
+                      <div class="col-4" *ngFor="let image of images; let i = index">
+                        <a (mouseover)="selectImage(image)">
+                          <img class="card-img img-fluid" [src]="image" [class.border]="selectedImage === image">
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>          
+              
+            </div>
+
+          </div>
+  
+        <!-- Colonna destra: Dettagli del prodotto -->
+        
+        <div class="col-lg-7 mt-5">
+          <div class="card border-0 shadow-sm h-100">
+
+            <!-- Canvas per lo zoom -->
+            <canvas
+            *ngIf="showZoom"
+            id="zoom-canvas"
+            width="2000"
+            height="2000"
+            class="zoom-canvas p-1 m-3"
+          ></canvas>
+       
+            <!-- Dettagli Prodotto -->
+
+            <div class="card-body p-4">
+
+              <!-- Badge categoria -->
+              <div class="mb-3">
+                <span class="badge bg-light text-secondary rounded-pill px-3 py-2">{{ product?.category?.title }}</span>
+              </div>
+              
+              <!-- Titolo prodotto con typography moderna -->
+              <h1 class="display-6 fw-bold mb-4">{{ product?.title }}</h1>
+              
+              <!-- Separatore sottile -->
+              <div class="d-flex align-items-center mb-4">
+                <div class="flex-grow-1 border-top border-2"></div>
+              </div>
+              
+              <!-- Descrizione con layout moderno -->
+              <div class="mb-4">
+                <h6 class="text-uppercase text-secondary fw-bold small mb-2">Description</h6>
+                <p [innerHTML]="product?.description"></p>
+              </div>
+
+              <!-- Separatore sottile -->
+              <div class="d-flex align-items-center mb-4">
+                <div class="flex-grow-1 border-top border-2"></div>
+              </div>
+              
+              <!-- Prezzo con design elegante -->
+              <div class="mb-4">
+                <h6 class="text-uppercase text-secondary fw-bold small mb-2">Price</h6>
+                <div class="d-inline-block border-bottom border-primary pb-1">
+                  <h2 class="fw-bold mb-0">{{ product?.price | currency }}</h2>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="card-footer bg-white border-top-0 p-4">
+              <div class="row align-items-center">
+                
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <div *ngIf="product ? product.stock > 5 : null" class="d-flex align-items-center">
+                    <span class="d-inline-block bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></span>
+                    <h6 class="text-success mb-0">Available</h6>
+                  </div>
+                  <div *ngIf="product ? product.stock <= 5 : null" class="d-flex align-items-center">
+                    <span class="d-inline-block bg-primary rounded-circle me-2" style="width: 8px; height: 8px;"></span>
+                    <h6 class="text-primary mb-0">Available: {{ product?.stock }}</h6>
+                  </div>
+                </div>
+                
+                <!-- Pulsante "Add to Cart" -->
+                <div class="col-md-6 text-md-end">
+                  <button 
+                    type="submit" 
+                    class="btn btn-success btn-lg w-100 w-md-auto" 
+                    name="submit" 
+                    value="addtocard" 
+                    (click)="product ? addToCart(product.sequId,$event) : null">
+                    <i class="fas fa-shopping-cart me-2"></i> Add To Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>

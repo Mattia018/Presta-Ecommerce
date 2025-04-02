@@ -1,0 +1,139 @@
+
+
+  
+  <div class="filter-sort-container m-sm-4">
+    
+    <h2 class="section-title h2 mt-3">Orders</h2>
+  
+    
+    <div class="filters-container">
+      <!-- Filtro per stato -->
+      <div class="status-filter">
+        <i class="fa-regular fa-circle-dot"></i>
+        
+        <span class="filter-label">Status</span>
+        <select (change)="onStatusFilterChange($any($event.target).value)">
+          <option value="">All</option>
+          <option value="PENDING">Pending</option>
+          <option value="CONFIRMED">Confirmed</option>
+          <option value="PAID">Paid</option>
+          <option value="SHIPPED">Shipped</option>
+          <option value="DELIVERED">Delivered</option>
+          <option value="CANCELLED">Cancelled</option>
+        </select>
+      </div>
+  
+      <!-- Pulsante di ordinamento per data -->
+      <div class="sort-buttons">
+        <button class="btn btn-outline-secondary btn-sm" (click)="onSortChange('createdAt')">
+          <i class="fas fa-clock me-1"></i>
+          <span *ngIf="sortBy === 'createdAt' && sortDirection === 'ASC'">Oldest </span>
+          <span *ngIf="sortBy === 'createdAt' && sortDirection === 'DESC'">Newest</span>
+          <span *ngIf="sortBy !== 'createdAt'">Date</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="orders.length > 0; else noOrders">  
+  <div class="m-4 order-grid">
+    <div *ngFor="let order of orders" class="shadow-lg order-card" (click)="viewOrderDetails(order.sequId)">
+      <!-- Header: Data e Ora (sinistra) | Stato (destra) -->
+      <div class="order-header">
+        <div class="header-left">
+          <p class="order-date">
+            <i class="fas fa-calendar-alt"></i> {{ order.createdAt | date:'dd/MM/yyyy' }}
+          </p>
+          <p class="order-time">
+            <i class="fas fa-clock"></i> {{ order.createdAt | date:'HH:mm' }}
+          </p>
+        </div>
+        <div class="header-right">
+          <!-- Icona dinamica -->
+          <i 
+            class="status-icon me-2" 
+            [ngSwitch]="order.status"
+            [ngClass]="{
+              'text-warning': order.status === 'PENDING',
+              'text-info': order.status === 'CONFIRMED',
+              'text-paid': order.status === 'PAID',
+              'text-primary': order.status === 'SHIPPED',
+              'text-success': order.status === 'DELIVERED',
+              'text-danger': order.status === 'CANCELLED'
+            }"
+          >
+            <ng-container [ngSwitch]="order.status">
+              <ng-container *ngSwitchCase="'PENDING'">
+                <i class="fas fa-hourglass-half"></i> 
+              </ng-container>
+              <ng-container *ngSwitchCase="'CONFIRMED'">
+                <i class="fas fa-check-circle"></i> 
+              </ng-container>
+              <ng-container *ngSwitchCase="'PAID'">
+                <i class="fas fa-credit-card"></i>
+              </ng-container>
+              <ng-container *ngSwitchCase="'SHIPPED'">
+                <i class="fas fa-shipping-fast"></i>
+              </ng-container>
+              <ng-container *ngSwitchCase="'DELIVERED'">
+                <i class="fas fa-box-open"></i>
+              </ng-container>
+              <ng-container *ngSwitchCase="'CANCELLED'">
+                <i class="fas fa-ban"></i> 
+              </ng-container>
+            </ng-container>
+          </i>
+          <!-- Badge con stato -->
+          <span 
+            class="badge px-3 py-2 rounded-pill status-badge"
+            [ngClass]="{
+              'bg-warning text-dark': order.status === 'PENDING',
+              'bg-info text-white': order.status === 'CONFIRMED',
+              'bg-paid text-white': order.status === 'PAID',
+              'bg-primary text-white': order.status === 'SHIPPED',
+              'bg-success text-white': order.status === 'DELIVERED',
+              'bg-danger text-white': order.status === 'CANCELLED'
+            }"
+          >
+            {{ order.status | titlecase }}
+          </span>
+        </div>
+      </div>
+  
+      <!-- Body: Indirizzo (sinistra) | Totale (destra) -->
+      <div class="order-body">
+        <div class="body-left">
+          <p class="shipping-address">
+            <i class="fas fa-map-marker-alt"></i> {{ order.shippingAddress }}
+          </p>
+        </div>
+        <div class="body-right">
+          <p class="total-price">
+            <strong>Total:</strong> {{ order.totalPrice | currency }}
+          </p>
+        </div>
+      </div>
+  
+      <!-- Azioni: Paga e Cancella -->
+      <div class="order-actions">
+        <button *ngIf="order.status === 'PENDING'" class="btn btn-pay" style="background-color: #635bff;" (click)="payOrder(order.sequId)">
+          <i class="fas fa-credit-card" ></i>
+        </button>
+        <button *ngIf="order.status === 'PENDING'" class="btn btn-cancel" (click)="cancelOrder(order.sequId)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginazione -->
+    <p-paginator
+    [rows]="size"
+    [totalRecords]="totalOrders"   
+    (onPageChange)="onPageChange($event)"
+  ></p-paginator>
+</div>
+
+<ng-template #noOrders>
+  <p class="empty-message m-4 h2 mt-2">No Orders</p>
+</ng-template>

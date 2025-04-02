@@ -1,0 +1,332 @@
+/* Contenitore principale */
+.order-detail-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Titolo della sezione */
+.section-title {
+    font-size: 1.75rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* ===== PROGRESSO FORZATO ORIZZONTALE ===== */
+.progress-bar-container {
+    width: 100%;
+    margin: 2rem 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: row !important; /* FORZATO */
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    position: relative;
+}
+
+/* Linea di sfondo */
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    right: 20px;
+    height: 4px;
+    background-color: #ddd;
+    z-index: 0;
+}
+
+/* Linea di progresso attiva */
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    height: 4px;
+    background-color: #4caf50;
+    z-index: 0;
+    transition: width 0.5s ease;
+}
+
+.progress-bar-table[data-progress="0"]::after { width: 0%; }
+.progress-bar-table[data-progress="1"]::after { width: calc(20% - 10px); } 
+.progress-bar-table[data-progress="2"]::after { width: calc(40% - 10px); } 
+.progress-bar-table[data-progress="3"]::after { width: calc(60% - 10px); } 
+.progress-bar-table[data-progress="4"]::after { width: calc(80% - 10px); }
+.progress-bar-table[data-progress="5"]::after { width: calc(100% - 160px); }
+
+.step {
+    display: inline-block !important; /* FORZATO */
+    width: 25% !important; /* FORZATO */
+    
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    margin: 0 !important; /* FORZATO */
+    padding: 0 !important; /* FORZATO */
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    display: inline-flex !important; /* FORZATO */
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin: 0 auto 8px auto !important; /* FORZATO */
+}
+
+.step i {
+    font-size: 1.25rem;
+    color: #ddd;
+    line-height: 1;
+}
+
+.step span {
+    display: block !important; /* FORZATO */
+    font-size: 0.85rem;
+    color: #888;
+    white-space: nowrap;
+    text-align: center !important; /* FORZATO */
+    width: 100% !important; /* FORZATO */
+}
+
+/* Step attivo */
+.step.active .step-icon {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.step.active i {
+    color: #4caf50;
+}
+
+.step.active span {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+/* Stile alternativo forzato come tabella */
+.progress-bar-table {
+    display: table !important;
+    width: 100%;
+    table-layout: fixed;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.progress-bar-table::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 10%;
+    right: 10%;
+    height: 4px;
+    background-color: #ddd;
+    z-index: 0;
+}
+
+.progress-bar-table::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 10%;
+    height: 4px;
+    background-color: #4caf50;
+    z-index: 0;
+    transition: width 0.5s ease;
+  }
+
+.progress-bar-row {
+    display: table-row !important;
+}
+
+.progress-step {
+    display: table-cell !important;
+    text-align: center;
+    vertical-align: top;
+    position: relative;
+    z-index: 1;
+    padding: 0 5px;
+}
+
+.progress-icon {
+    width: 50px;
+    height: 50px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin: 0 auto 8px auto;
+}
+
+.progress-step.active .progress-icon {
+    border-color: #4caf50;
+}
+
+.progress-step.active i {
+    color: #4caf50;
+}
+
+.progress-step span {
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Dettagli generali */
+.order-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.detail-item i {
+    font-size: 1.5rem;
+    color: #aaa;
+}
+
+/* Lista prodotti */
+.product-list-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+    text-align: center;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Pulsante "Torna Indietro" */
+.btn-back {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #1e88e5;
+}
+
+/* Stile generale delle card */
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+
+  :host ::ng-deep {
+    .p-paginator {
+      background-color: transparent;
+      border: none;
+      
+      .p-paginator-first,
+      .p-paginator-prev,
+      .p-paginator-next,
+      .p-paginator-last {
+        border: none;
+        background-color: transparent;
+        color: #666;
+        border-radius: 0;
+        
+        &:hover:not(.p-disabled) {
+          background-color: transparent;
+          color: #000;
+          text-decoration: underline;
+        }
+      }
+      
+      .p-paginator-pages {
+        .p-paginator-page {
+          border: none;
+          background-color: transparent;
+          color: #666;
+          border-radius: 0;
+          
+          &.p-highlight {
+            background-color: transparent;
+            color: #000;
+            font-weight: bold;
+            text-decoration: underline;
+          }
+          
+          &:hover:not(.p-highlight) {
+            background-color: transparent;            
+          }
+        }
+      }
+      
+      .p-dropdown {
+        border: 1px solid #eee;
+        
+        &:hover {
+          border-color: #ccc;
+        }
+      }
+    }
+  }
+  

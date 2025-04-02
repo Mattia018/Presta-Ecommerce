@@ -1,0 +1,146 @@
+<div class="container py-5">
+  <div class="row">
+    <!-- Colonna delle categorie e filtri -->
+    
+<div class="col-lg-3">
+      <div class="filter-sidebar shadow-lg p-3 rounded">
+        
+        <!-- Sort By - Inline Layout -->
+        <div class="filter-section mb-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 d-flex align-items-center">
+              <i class="fa fa-sort me-2" style="color: #59ab6e;"></i>
+              
+            </h5>
+            <div class="position-relative flex-grow-1 ms-3">
+              <select class="form-select border-0" 
+                      [(ngModel)]="selectedSort" 
+                      (change)="applySorting()"
+                      style="height: 40px; background-color: #e6f4ea; color: #2f6a4f; border-radius: 10px;">
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="filter-section mb-4">
+          <div class="d-flex align-items-center">
+            <div class="position-relative flex-grow-1">
+              <i class="fa fa-search position-absolute ms-3" style="top: 12px; color: #59ab6e;"></i>
+              <input type="text" 
+                    class="form-control ps-5 border-0" 
+                    style="height: 45px; background-color: #e6f4ea; color: #2f6a4f; border-radius: 25px;"
+                    [(ngModel)]="searchQuery" 
+                    (ngModelChange)="applySearchFilter(searchQuery)">
+            </div>
+            
+            <!-- Reset Icon  -->
+            <button 
+              class="btn btn-light rounded-circle ms-2 d-flex align-items-center justify-content-center" 
+              style="width: 45px; height: 45px;"
+              (click)="resetFilters()" 
+              title="Reset all filters">
+              <i class="fa fa-undo text-muted"></i>
+            </button>
+          </div>
+        </div>
+        
+        
+        
+        <!-- Categories -->
+        <div class="filter-section mb-4">
+          <div class="d-flex justify-content-between align-items-center" 
+              data-bs-toggle="collapse" 
+              href="#categoriesCollapse" 
+              role="button" 
+              aria-expanded="false" 
+              aria-controls="categoriesCollapse">
+            <h5 class="mb-0" style="color: #979997;"><i class="fa fa-tags m-1"></i>Categories</h5>
+            <i class="fa fa-chevron-down" style="color: #979997;"></i>
+          </div>
+          
+          <div class="collapse mt-2" id="categoriesCollapse">
+            <ul class="list-unstyled ps-2">
+              <li *ngFor="let category of categories" class="mb-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" 
+                        name="category" 
+                        [id]="'category-' + category.sequId" 
+                        [value]="category" 
+                        (change)="applyCategoryFilter(category.title)">
+                  <label class="form-check-label" [for]="'category-' + category.sequId">
+                    {{ category.title }}
+                  </label>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      
+        <!-- Price Range Slider -->
+        <div class="filter-section mb-4 d-flex align-items-center">
+          <div class="d-flex align-items-center me-3">
+            <i class="fa fa-light fa-coins me-2" style="color: #979997;"></i>
+            
+          </div>
+          <div class="flex-grow-1">
+            <ngx-slider 
+              [(value)]="minPrice" 
+              [(highValue)]="maxPrice" 
+              [options]="priceSliderOptions" 
+              (userChangeEnd)="applyPriceFilter(minPrice, maxPrice)">
+            </ngx-slider>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Colonna dei prodotti -->
+    <div class="col-lg-9">
+
+      <div class="row">
+        <div class="col-md-4 mb-lg-5" *ngFor="let product of products">
+          <div class="card product-card shadow-lg h-100">
+            <img class="card-img-top " style="cursor: pointer;" [src]="product.imgResources" alt="{{ product.title }}" (click)="goToProductDetails(product.sequId)">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.title }}</h5>
+              <p class="badge text-secondary rounded-pill px-3 py-2" style="background-color: #9997975c;">{{ product?.category?.title }}</p>
+              
+              <!-- Prezzo e Add to Cart allineati -->
+              <div class="row align-items-center justify-content-between mt-3">
+                
+                <div class=" col-md-6">
+                  <b>{{ product.price | currency }}</b>
+                </div>
+
+                
+                <div class="col-md-3">
+                <button class="btn btn-primary bg-success d-flex align-items-center" (click)="addToCart(product.sequId,$event)">
+                  <i class="fa-solid fa-cart-plus me-2"></i>
+                  
+                </button>
+              </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-chatbot></app-chatbot>
+
+      <!-- Paginazione -->
+      <div class="dot-pagination">
+        <button class="bg-success" *ngFor="let page of getPages()"
+                [class.active]="page === currentPage"
+                (click)="goToPage(page)">
+          {{ page + 1 }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

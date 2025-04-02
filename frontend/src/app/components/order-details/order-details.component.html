@@ -1,0 +1,117 @@
+<div *ngIf="order" class="order-detail-container">
+    <!-- Card: Barra di Completamento -->
+    <div class="card shadow-lg">
+      <i class="fas fa-tasks"></i>
+      <h2 class="section-title h2">Order Status</h2>
+      <div class="progress-bar-table" [attr.data-progress]="getProgressValue(order.status)">
+        <div class="progress-bar-row">
+          <!-- Step: Created -->
+          <div class="progress-step" [ngClass]="{ active: order.status === 'PENDING' ||  order.status === 'PAID' || order.status === 'CONFIRMED' || order.status === 'SHIPPED' || order.status === 'DELIVERED' }">
+            <div class="progress-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <p>Created</p>
+          </div>
+    
+          
+    
+          <!-- Step: Paid -->
+          <div class="progress-step" [ngClass]="{ active: order.status === 'PAID' || order.status === 'CONFIRMED' || order.status === 'SHIPPED' || order.status === 'DELIVERED' }">
+            <div class="progress-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <p>Paid</p>
+          </div>
+
+          <!-- Step: Confirmed -->
+          <div class="progress-step" [ngClass]="{ active: order.status === 'CONFIRMED' ||  order.status === 'SHIPPED' || order.status === 'DELIVERED' }">
+            <div class="progress-icon">
+              <i class="fas fa-check-double"></i>
+            </div>
+            <p>Confirmed</p>
+          </div>
+    
+          <!-- Step: Shipped -->
+          <div class="progress-step" [ngClass]="{ active: order.status === 'SHIPPED' || order.status === 'DELIVERED' }">
+            <div class="progress-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+            <p>Shipped</p>
+          </div>
+    
+          <!-- Step: Delivered -->
+          <div class="progress-step" [ngClass]="{ active: order.status === 'DELIVERED' }">
+            <div class="progress-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <p>Delivered</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Card: Dettagli Generali -->
+    <div class="card shadow-lg">
+        <i class="fas fa-info-circle"></i>
+      <h2 class="section-title h2">Order Details</h2>
+      <div class="order-details">
+        <div class="detail-item">
+          <i class="fas fa-hashtag"></i>
+          <p><strong>Order ID:</strong> {{ order.sequId }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-money-check"></i>
+            <p><strong>Total:</strong> {{ order.totalPrice | currency }}</p>
+          </div>
+        <div class="detail-item">
+          <i class="fas fa-calendar-alt"></i>
+          <p> {{ order.createdAt | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-clock"></i>
+            <p>{{ order.createdAt | date:'HH:mm' }}</p>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-info-circle"></i>
+            <p> {{ order.status }}</p>
+          </div>        
+        
+        <div class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <p> {{ order.shippingAddress }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Card: Lista Prodotti -->
+  <div class="card shadow-lg">
+    <i class="fas fa-shopping-cart"></i>
+    <h2 class="section-title h2">Products</h2>    
+    <div class="product-list mb-4">         
+      <div *ngFor="let item of paginatedItems" class="product-item shadow-lg">
+        <a [routerLink]="['/shop-details', item.product.sequId]">
+          
+        <img [src]="item.product.imgResources" alt="{{ item.product.title }}" class="product-image">
+      </a>
+        <div class="product-info">
+          <p><strong>{{ item.product.title }}</strong></p>
+          <p><i class="fas fa-cubes"></i>{{ item.quantity }}</p>
+          <p>{{ item.product.price | currency }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+    <!-- Paginazione -->
+    <p-paginator
+    [rows]="rows"
+    [totalRecords]="totalRecords"
+    (onPageChange)="onPageChange($event)"
+  ></p-paginator>
+  </div>
+
+  </div>
+  
+    <!-- Pulsante Torna Indietro -->
+    <button class=" btn btn-outline-secondary" (click)="goBack()"><i class="fa fa-arrow-alt-circle-left"></i> All Oders</button>
+  </div>

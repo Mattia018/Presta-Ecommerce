@@ -1,0 +1,63 @@
+<div *ngIf="cart" class="checkout-container mb-3">
+  <!-- Riepilogo Ordine -->
+  <h2 class="checkout-title">Checkout</h2>
+  <div *ngFor="let item of cart.items" class="order-card">
+    <div class="product-image">
+      <img [src]="item.product.imgResources || 'path/to/default-image.png'" alt="{{ item.product.title }}">
+    </div>
+    <div class="product-details">
+      <h3>{{ item.product.title }}</h3>
+      <p class="price">{{ item.product.price | currency }}</p>
+      <div class="quantity-control">
+        <button class="btn btn-sm btn-outline-secondary" 
+                (click)="updateQuantity(item.product.sequId, item.quantity - 1)" 
+                [disabled]="item.quantity <= 1">-</button>
+        <span class="quantity">{{ item.quantity }}</span>
+        <button class="btn btn-sm btn-outline-secondary" 
+                (click)="updateQuantity(item.product.sequId, item.quantity + 1)">+</button>
+      </div>
+      <p class="subtotal">Sub Total: {{ item.product.price * item.quantity | currency }}</p>
+      <button class="btn btn-sm btn-danger remove-button" (click)="removeProduct(item.product.sequId)">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+
+      <!-- Indirizzo di Spedizione -->
+      <div class="shipping-address card shadow-lg p-3 mb-3 text-center">
+        <h3 class="h2">Shipping Address</h3>
+        <div class="form-group">
+          <div class="input-container">
+            <input 
+              type="text"         
+              [(ngModel)]="shippingAddress"
+              (input)="searchAddress(shippingAddress)"
+              required
+              class="flex-input" 
+            >
+          </div>
+          <!-- Lista di suggerimenti -->
+          <div *ngIf="addressSuggestions.length > 0" class="address-suggestions">
+            <div 
+              *ngFor="let suggestion of addressSuggestions" 
+              class="suggestion-item"
+              (click)="selectAddress(suggestion)"
+            >
+              {{ suggestion.display_name }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+  <!-- Riepilogo Totale -->
+  <div class="order-summary shadow-lg p-3">
+    <h3 class="h2">Total Ammount  <strong class="total-price text-secondary">{{ totalPrice | currency }}</strong> </h3>
+    
+    <button class="btn btn-success w-100 mt-2" (click)="proceedToPayment()">Proced to Payment</button>
+  </div>
+</div>
+
+
+<div *ngIf="!cart" class="empty-cart">
+  <p>Empy Cart</p>
+</div>

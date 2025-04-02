@@ -1,0 +1,59 @@
+<div class="container mt-5 p-4 mb-3" >
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-white text-center py-4">
+          <h2 class="mb-0">Login</h2>
+          <p class="mb-0">Enter with your Account</p>
+        </div>
+        <div class="card-body p-4">
+          <!-- Messaggio di errore -->
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+          </div>
+          
+
+          <form (ngSubmit)="onSubmit()">
+            <!-- Campo Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required />
+              </div>
+            </div>
+
+            <!-- Campo Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </span>                
+                <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required />
+              </div>
+            </div>
+
+            <!-- Pulsante Login -->
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i> Login
+              </button>
+            </div>
+
+            
+
+          <!-- Link per la registrazione -->
+          <div class="text-center mt-3">
+            <p class="mb-0">Get an Account <a [routerLink]="'/register'" class="text-primary">Register</a></p>
+          </div>
+        
+      
+   
+ 
+
+
+          

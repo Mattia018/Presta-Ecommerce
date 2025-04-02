@@ -1,0 +1,726 @@
+<div class="container ">
+  <h2 class="text-center h1  ">Dashboard</h2>
+
+
+      <div class="row justify-content-center">
+
+          <div class="col-12 col-md-4 mt-3 text-center ">
+              <div class="rounded-circle border shadow-lg d-flex align-items-center justify-content-center hover-effect animate__animated animate__fadeInRight" style="width: 200px; height: 200px; margin: 0 auto;">
+                <h1 [countUp]="countOrders"class="display-3 text-success mb-0">0</h1>
+                  
+              </div>
+              <h5 class="text-center mt-3 mb-0 h2">Orders</h5>
+
+              
+          </div>
+
+          <div class="col-12 col-md-4 mt-3 text-center">
+            <div class="rounded-circle border shadow-lg d-flex align-items-center justify-content-center hover-effect animate__animated animate__fadeInRight" style="width: 200px; height: 200px; margin: 0 auto;">
+                
+                <h1 [countUp]="totalRevenue" [options]="{ 
+                  decimalPlaces: 2,
+                  decimal: '.',
+                  separator: ',',
+                  useEasing: true
+                }" class="display-6 text-success mb-0">0</h1>
+            </div>
+            <h5 class="text-center mt-3 mb-0 h2">Revenue</h5>
+          </div>
+        
+            
+      </div>
+      
+      
+
+      <div class="row justify-content-center mb-5">
+
+          <div class="col-12 col-md-4 mt-3 text-center">
+              <div class="rounded-circle border shadow-lg d-flex align-items-center justify-content-center hover-effect animate__animated animate__fadeInRight" style="width: 200px; height: 200px; margin: 0 auto;">
+                  <h1 [countUp]="countUser" class="display-3 text-success mb-0">0</h1>
+              </div>
+              <h5 class="text-center mt-3 mb-0 h2">Users</h5>
+          </div>
+
+          <div class="col-12 col-md-4 mt-3 text-center">
+            <div class="rounded-circle border shadow-lg d-flex align-items-center justify-content-center hover-effect animate__animated animate__fadeInRight" style="width: 200px; height: 200px; margin: 0 auto;">
+                <h1 [countUp]="counProducts" class="display-3 text-success mb-0">0</h1>
+            </div>
+            <h5 class="text-center mt-3 mb-0 h2">Products</h5>
+          </div>
+
+          <div class="col-12 col-md-4 mt-3 text-center">
+            <div class="rounded-circle border shadow-lg d-flex align-items-center justify-content-center hover-effect animate__animated animate__fadeInRight" style="width: 200px; height: 200px; margin: 0 auto;">
+                <h1 [countUp]="countCategories" class="display-3 text-success mb-0">0</h1>
+            </div>
+            <h5 class="text-center mt-3 mb-0 h2">Categories</h5>
+          </div>
+      
+          
+    </div>
+
+    <div class="card mb-3 shadow-lg hover-effect animate__animated animate__fadeInRight">
+    <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+   </div>
+  <!-- Prima riga: Sezione Categorie -->
+  <div class="row">
+    <div class="col-md-12 mb-4">
+      <div class="card shadow-lg hover-effect animate__animated animate__fadeInRight">
+        <div class="card-header bg-gradient-success text-white d-flex">
+          <h3 class="card-title mb-0"><i class="fas fa-tags me-2"></i>Categories</h3>
+          <!-- Pulsante Add -->
+          <button class="btn btn-success btn-sm ms-auto btn-hover-custom" (click)="openAddCategoryModal()">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center animate__animated animate__fadeIn" *ngFor="let category of categories">
+            <!-- Titolo della categoria -->
+            <span class="flex-grow-1">{{ category.title }}</span>
+            <!-- Pulsanti Update e Delete -->
+            <div class="d-flex gap-2">
+              <span><i class="fa-solid fa-box-archive m-sm-1"></i><b class="badge bg-info">{{ getProductCount(category.sequId) }}</b> </span>
+              <button class="btn btn-warning btn-sm btn-hover-custom" (click)="openUpdateCategoryModal(category)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-danger btn-sm btn-hover" (click)="deleteCategory(category.sequId)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+    <!-- Seconda riga: Sezione Prodotti -->
+  <div class="row">
+    <div class="col-md-12 mb-4">
+      <div class="card shadow-lg hover-effect animate__animated animate__fadeInLeft">
+        <div class="card-header bg-gradient-primary text-white d-flex align-items-center">
+          <h3 class="card-title mb-0"><i class="fas fa-box-open me-2"></i>Products</h3>
+          <button class="btn btn-success btn-sm ms-auto btn-hover-custom" (click)="openAddProductModal()">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+
+        <!-- Barra di Ricerca e Pulsanti di Ordinamento -->
+        <div class="list-group-item d-flex justify-content-between align-items-center bg-light">
+          <!-- Barra di Ricerca -->
+          <div class="input-group me-3" style="max-width: 300px;">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search by name..."
+              [(ngModel)]="searchQuery"
+              (keyup)="onSearch()"
+            />
+            <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+
+          <!-- Pulsanti di Ordinamento -->
+          <div class="d-flex gap-2">
+
+            <!-- Pulsante Ordina per Id -->
+            <button class="btn btn-outline-secondary btn-sm" (click)="onSortChange('sequId')">
+              <i class="fas fa-sort-numeric-desc me-1"></i>
+              <span *ngIf="sortBy === 'sequId' && sortOrder === 'asc'">1-N</span>
+              <span *ngIf="sortBy === 'sequId' && sortOrder === 'desc'">N-1</span>
+              <span *ngIf="sortBy !== 'sequId'">ID</span>
+            </button>
+
+            <!-- Pulsante Ordina per Nome -->
+            <button class="btn btn-outline-secondary btn-sm" (click)="onSortChange('title')">
+              <i class="fas fa-sort-alpha-down me-1"></i>
+              <span *ngIf="sortBy === 'title' && sortOrder === 'asc'">A-Z</span>
+              <span *ngIf="sortBy === 'title' && sortOrder === 'desc'">Z-A</span>
+              <span *ngIf="sortBy !== 'title'">Name</span>
+            </button>
+
+            <!-- Pulsante Ordina per Prezzo -->
+            <button class="btn btn-outline-secondary btn-sm" (click)="onSortChange('price')">
+              <i class="fas fa-dollar-sign me-1"></i>
+              <span *ngIf="sortBy === 'price' && sortOrder === 'asc'">Low-High</span>
+              <span *ngIf="sortBy === 'price' && sortOrder === 'desc'">High-Low</span>
+              <span *ngIf="sortBy !== 'price'">Price</span>
+            </button>
+
+            <!-- Pulsante Ordina per Stock -->
+            <button class="btn btn-outline-secondary btn-sm" (click)="onSortChange('stock')">
+              <i class="fas fa-boxes me-1"></i>
+              <span *ngIf="sortBy === 'stock' && sortOrder === 'asc'">Low-High</span>
+              <span *ngIf="sortBy === 'stock' && sortOrder === 'desc'">High-Low</span>
+              <span *ngIf="sortBy !== 'stock'">Stock</span>
+            </button>
+
+            <!-- Pulsante Reset Filtri -->
+            <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+              <i class="fas fa-redo me-1"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista dei prodotti -->
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center animate__animated animate__fadeIn" *ngFor="let product of products">
+            <!-- ID Prodotto -->
+            <div class="col-1 text-start " style="cursor: pointer;" (click)="viewProductDetails(product.sequId)">              
+              <p class="mb-0 fw-bold"> <i class="fas fa-hashtag text-primary"></i><strong class="m-1">ID :</strong>{{ product.sequId }}</p>
+            </div>
+        
+            <!-- Nome Prodotto -->
+            <div class="col-3 text-start">
+              <h5 class="mb-0">{{ product.title }}</h5>              
+            </div>
+            
+            <!--  Categoria -->
+            <div class="col-3 text-start">
+              <p class="mb-0">{{ product.category.title}}</p>              
+            </div>
+
+            <!--  Prezzo -->
+            <div class="col-2 text-strat">
+              <p class="mb-0 text-success fw-bold">{{ product.price | currency }}</p>
+            </div>
+
+            
+
+            <div class="col-1 text-end">
+              <p class="mb-0">
+                <i class="fas fa-box me-1"></i>
+                <span class="badge" [ngClass]="{'bg-danger': product.stock < 10, 'bg-info': product.stock >= 10}">
+                {{ product.stock }}</span>
+              </p>
+            </div>
+
+
+            <div class="col-1 text-end">
+            <button class="btn btn-warning btn-sm btn-hover-custom ms-2" (click)="openUpdateProductModal(product)">
+              <i class="fas fa-edit"></i> 
+            </button>
+            <button class="btn btn-danger btn-sm btn-hover ms-2" (click)="deleteProduct(product.sequId)">
+              <i class="fas fa-trash"></i> 
+            </button>
+          </div>
+          </li>
+        </ul>
+
+        <!-- Paginator -->
+        <div class="custom-paginator">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageIndex]="currentPage"
+            (page)="onPageChange($event.pageIndex)"
+            [hidePageSize]="true"
+            aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+<!--  Terza riga: Sezione Ordini -->
+<div class="row">
+  <div class="col-md-12 mb-4">
+    <div class="card shadow-lg hover-effect animate__animated animate__fadeInLeft">
+      <!-- Intestazione con nuovo gradiente -->
+      <div class="card-header bg-gradient-secondary text-white d-flex align-items-center">
+        <h3 class="card-title mb-0">
+          <i class="fas fa-receipt me-2"></i> Orders
+        </h3>
+      </div>
+      
+      <!-- Barra di Filtri e Ordinamento per gli Ordini -->
+      <div class="order-filters d-flex flex-wrap gap-3 mb-3 bg-light p-3 rounded">
+        <!-- Prima colonna: Filtri principali -->
+        <div class="col-md-6 d-flex gap-lg-5 ">
+          <!-- Filtro per Stato -->
+          <div class="filter-item">
+            <select 
+              class="form-select" 
+              [(ngModel)]="selectedStatus" 
+              (change)="loadOrders(0)"
+            >
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="paid">Paid</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <i class="fas fa-filter me-1"></i>
+            <span class="filter-label">Status</span>
+          </div>
+
+          <!-- Filtro per Data -->
+          <div class="filter-item">
+            <mat-form-field 
+              class="small-date-range" 
+              appearance="fill" 
+            >
+              <mat-date-range-input [rangePicker]="picker">
+                <input
+                  matStartDate
+                  placeholder="Start "
+                  [(ngModel)]="dateRange.start"
+                  (ngModelChange)="loadOrders(0)"
+                >
+                <input
+                  matEndDate
+                  placeholder="End "
+                  [(ngModel)]="dateRange.end"
+                  (ngModelChange)="loadOrders(0)"
+                >
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+
+          <!-- Ricerca per Email -->
+          <div class="filter-item d-flex align-items-center">
+            <i class="fas fa-envelope me-2"></i>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Search by Email" 
+              [(ngModel)]="orderSearchEmail" 
+              (keyup.enter)="loadOrders(0)"
+            >
+          </div>
+        </div>
+
+        <!-- Seconda colonna: Pulsanti di ordinamento e reset -->
+        <div class="col-md-6 d-flex justify-content-end">
+          <!-- Pulsanti di Ordinamento -->
+          <div class="sort-buttons d-flex gap-2 me-3">
+            <!-- Pulsante Prezzo -->
+            <button 
+              class="btn btn-outline-secondary btn-sm" 
+              (click)="onOrderSortChange('totalPrice')"
+            >
+              <i class="fas fa-dollar-sign me-1"></i>
+              <span *ngIf="orderSortBy === 'totalPrice' && orderSortOrder === 'asc'">Low-High</span>
+              <span *ngIf="orderSortBy === 'totalPrice' && orderSortOrder === 'desc'">High-Low</span>
+              <span *ngIf="orderSortBy !== 'totalPrice'">Price</span>
+            </button>
+            
+            <!-- Pulsante Data -->
+            <button 
+              class="btn btn-outline-secondary btn-sm" 
+              (click)="onOrderSortChange('createdAt')"
+            >
+              <i class="fas fa-clock me-1"></i>
+              <span *ngIf="orderSortBy === 'createdAt' && orderSortOrder === 'asc'">Oldest </span>
+              <span *ngIf="orderSortBy === 'createdAt' && orderSortOrder === 'desc'">Newest</span>
+              <span *ngIf="orderSortBy !== 'createdAt'">Date</span>
+            </button>
+          
+
+          <!-- Bottone Reset -->
+          <button 
+            class="btn btn-outline-secondary btn-sm" 
+            (click)="resetOrderFilters()"
+          >
+            <i class="fas fa-redo me-1"></i>
+          </button>
+        </div>
+        </div>
+      </div>
+
+
+      <!-- Lista degli ordini con nuove colonne e icone -->
+            <ul class="list-group list-group-flush">
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center animate__animated animate__fadeIn"
+                *ngFor="let order of orders"                
+              >
+            <!-- Parte sinistra (70% larghezza) -->
+          <div class="left-section d-flex justify-content-between w-100" style="width: 70%">
+            <!-- 4 colonne con contenuto centrato -->
+            <div class="col d-flex flex-column text-center" style="flex: 1">
+              <div class="mb-2" style="cursor: pointer;" (click)="viewOrderDetails(order.sequId)">
+                <i class="fas fa-hashtag text-primary"></i>
+                <strong class="m-1">Order :</strong> {{ order.sequId }}
+              </div>
+            </div>
+
+            <div class="col d-flex flex-column text-center" style="flex: 1">
+              <div class="mb-2">
+                <i class="fas fa-calendar-alt text-primary"></i>
+                <span class="m-1">{{ order.createdAt | date:'dd/MM/yyyy'}}</span>
+              </div>
+            </div>                     
+
+            <div class="col d-flex flex-column text-center" style="flex: 1">
+              <div class="mb-2">
+                <i class="fas fa-boxes text-primary"></i>
+                {{ order.productCount }}
+              </div>
+            </div>
+
+            <div class="col d-flex flex-column text-end" style="flex: 1">
+              <div class="mb-2">
+                <i class="fas fa-dollar-sign text-primary"></i>
+                {{ order.totalPrice | number:'1.2-2'}}
+              </div>
+            </div>
+
+            <div class="col d-flex flex-column text-end" style="flex: 1">
+              <div>
+                <i class="fas fa-user text-primary"></i>
+                {{ order.userEmail }}
+              </div>
+            </div>
+          </div>
+      
+                    <!-- Parte destra (30% larghezza) -->
+          <div class="right-section d-flex align-items-center" style="width: 30%">
+            <div class="status-container flex-fill me-4">
+              <div class="d-flex align-items-center">
+                <!-- Icona dinamica -->
+                <i 
+                  class="status-icon me-2" 
+                  [ngSwitch]="order.status"
+                  [ngClass]="{
+                    'text-warning': order.status === 'PENDING',
+                    'text-success': order.status === 'CONFIRMED' || order.status === 'DELIVERED',
+                    'text-paid': order.status === 'PAID',
+                    'text-primary': order.status === 'SHIPPED',
+                    'text-danger': order.status === 'CANCELLED'
+                  }"
+                >
+                  <ng-container [ngSwitch]="order.status">
+                    <ng-container *ngSwitchCase="'PENDING'">
+                      <i class="fas fa-clock"></i>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'CONFIRMED'">
+                      <i class="fas fa-check"></i>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'PAID'">
+                      <i class="fas fa-dollar-sign"></i>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'SHIPPED'">
+                      <i class="fas fa-truck"></i>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'DELIVERED'">
+                      <i class="fas fa-box-open"></i>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'CANCELLED'">
+                      <i class="fas fa-times"></i>
+                    </ng-container>
+                  </ng-container>
+                </i>
+                <!-- Badge con stato -->
+                <span 
+                  class="badge px-3 py-2 rounded-pill status-badge"
+                  [ngClass]="{
+                    'bg-warning text-dark': order.status === 'PENDING',
+                    'bg-success text-white': order.status === 'CONFIRMED' || order.status === 'PAID' || order.status === 'DELIVERED',
+                    'bg-primary text-white': order.status === 'SHIPPED',
+                    'bg-danger text-white': order.status === 'CANCELLED'
+                  }"
+                >
+                  {{ order.status | titlecase }}
+                </span>
+              </div>
+            </div>
+            <button 
+              class="btn btn-warning btn-sm btn-hover-custom" 
+              (click)="openUpdateOrderModal(order)"
+            >
+              <i class="fas fa-edit me-1"></i>
+            </button>
+          </div>
+
+        </li>
+      </ul>
+
+      <!-- Paginator -->
+      <div class="custom-paginator">
+        <mat-paginator
+          [length]="orderTotalItems"
+          [pageSize]="orderPageSize"
+          [pageIndex]="orderCurrentPage"
+          (page)="onOrderPageChange($event.pageIndex)"
+          [hidePageSize]="true"
+          aria-label="Select page">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+  <!-- Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal per aggiungere un prodotto -->
+<div class="modal fade bg-white" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" [ngClass]="{'show': isAddProductModalOpen}" *ngIf="isAddProductModalOpen">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="w-100 pt-1 mb-5 text-right"></div>
+    <div class="modal-content modal-body border-0 p-0">
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="productTitle" class="form-label">Title</label>
+          <input type="text" class="form-control" id="productTitle" [(ngModel)]="newProduct.title" name="title" required>
+        </div>
+        <div class="mb-3">
+          <label for="productDescription" class="form-label">Description</label>
+          <textarea class="form-control" id="productDescription" [(ngModel)]="newProduct.description" name="description"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="productImgResources" class="form-label">image 1</label>
+          <input type="text" class="form-control" id="productImgResources" [(ngModel)]="newProduct.imgResources" name="imgResources">
+        </div>
+        <div class="mb-3">
+          <label for="productImgResources2" class="form-label">Image 2</label>
+          <input type="text" class="form-control" id="productImgResources2" [(ngModel)]="newProduct.imgResources2" name="imgResources2">
+        </div>
+        <div class="mb-3">
+          <label for="productImgResources3" class="form-label">Image 3</label>
+          <input type="text" class="form-control" id="productImgResources3" [(ngModel)]="newProduct.imgResources3" name="imgResources3">
+        </div>
+        <div class="mb-3">
+          <label for="productPrice" class="form-label">Price</label>
+          <input type="number" class="form-control" id="productPrice" [(ngModel)]="newProduct.price" name="price" required>
+        </div>
+        <div class="mb-3">
+          <label for="productStock" class="form-label">Stock</label>
+          <input type="number" class="form-control" id="productStock" [(ngModel)]="newProduct.stock" name="stock" required>
+        </div>
+        <div class="mb-3">
+          <label for="productCategory" class="form-label">Categogy</label>
+          <div class="input-group">
+            <select class="form-control" id="productCategory" [(ngModel)]="newProduct.categoryId" name="categoryId">
+              <option *ngFor="let category of categories" [value]="category.sequId">{{ category.title }}</option>
+            </select>
+            <button type="button" class="btn btn-success" (click)="toggleCategoryCreation()">
+              <i class="fas fa-plus"></i> New Category
+            </button>
+          </div>
+        </div>
+        <!-- Sezione per creare una nuova categoria -->
+        <div class="mb-3" *ngIf="isCreatingCategory">
+          <label for="newCategoryTitle" class="form-label">New Categoty</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="newCategoryTitle" [(ngModel)]="newCategory.title" name="newCategoryTitle" placeholder="New Title" required>
+            <button type="button" class="btn btn-primary" (click)="createCategory()">
+              <i class="fas fa-check"></i> Add
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAddProductModal()">Close</button>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal per l'aggiunta di una nuova categoria -->
+<div class="modal mt-5" [ngClass]="{'show': isAddCategoryModalOpen}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New Category</h5>
+        <button type="button" class="btn-close" (click)="closeAddCategoryModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createCategory()">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Category Title" [(ngModel)]="newCategory.title" name="title" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeAddCategoryModal()">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal per aggiornare un prodotto -->
+<div class="modal fade bg-white" id="updateProductModal" tabindex="-1" role="dialog" aria-labelledby="updateProductModalLabel" [ngClass]="{'show': isUpdateProductModalOpen}" *ngIf="isUpdateProductModalOpen">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="w-100 pt-1 mb-5 text-right"></div>
+    <div class="modal-content modal-body border-0 p-0">
+      <form (ngSubmit)="onUpdateSubmit()">
+        <div class="mb-3">
+          <label for="updateProductTitle" class="form-label">Title</label>
+          <input type="text" class="form-control" id="updateProductTitle" [(ngModel)]="selectedProduct.title" name="title" required>
+        </div>
+        <div class="mb-3">
+          <label for="updateProductDescription" class="form-label">Description</label>
+          <textarea class="form-control" id="updateProductDescription" [(ngModel)]="selectedProduct.description" name="description"></textarea>
+        </div>
+        <!-- Campo per Immagine 1 con Preview -->
+        <div class="mb-3">
+          <label for="updateProductImgResources" class="form-label">Image 1</label>
+          <input type="text" class="form-control" id="updateProductImgResources" [(ngModel)]="selectedProduct.imgResources" name="imgResources" (input)="updateImagePreview('imgResources', $event)">
+          <div class="mt-2">
+            <img [src]="selectedProduct.imgResources" alt="Preview Immagine 1" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" *ngIf="selectedProduct.imgResources">
+            <small class="text-muted" *ngIf="!selectedProduct.imgResources">No Image</small>
+          </div>
+        </div>
+        <!-- Campo per Immagine 2 con Preview -->
+        <div class="mb-3">
+          <label for="updateProductImgResources2" class="form-label">Image 2</label>
+          <input type="text" class="form-control" id="updateProductImgResources2" [(ngModel)]="selectedProduct.imgResources2" name="imgResources2" (input)="updateImagePreview('imgResources2', $event)">
+          <div class="mt-2">
+            <img [src]="selectedProduct.imgResources2" alt="Preview Immagine 2" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" *ngIf="selectedProduct.imgResources2">
+            <small class="text-muted" *ngIf="!selectedProduct.imgResources2">No Image</small>
+          </div>
+        </div>
+        <!-- Campo per Immagine 3 con Preview -->
+        <div class="mb-3">
+          <label for="updateProductImgResources3" class="form-label">Image 3</label>
+          <input type="text" class="form-control" id="updateProductImgResources3" [(ngModel)]="selectedProduct.imgResources3" name="imgResources3" (input)="updateImagePreview('imgResources3', $event)">
+          <div class="mt-2">
+            <img [src]="selectedProduct.imgResources3" alt="Preview Immagine 3" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" *ngIf="selectedProduct.imgResources3">
+            <small class="text-muted" *ngIf="!selectedProduct.imgResources3">No Image</small>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="updateProductPrice" class="form-label">Price</label>
+          <input type="number" class="form-control" id="updateProductPrice" [(ngModel)]="selectedProduct.price" name="price" required>
+        </div>
+        <div class="mb-3">
+          <label for="updateProductStock" class="form-label">Stock</label>
+          <input type="number" class="form-control" id="updateProductStock" [(ngModel)]="selectedProduct.stock" name="stock" required>
+        </div>
+        <div class="mb-3">
+          <label for="updateProductCategory" class="form-label">Category</label>
+          <p class="text-muted mt-2">
+            Current Category: <strong>{{ selectedProduct.category?.title || "No Category" }}</strong>
+          </p>
+          <div class="input-group">
+            <select class="form-control" id="updateProductCategory" [(ngModel)]="selectedProduct.categoryId" name="categoryId">
+              <option *ngFor="let category of categories" [value]="category.sequId" [selected]="category.sequId === selectedProduct.categoryId">
+                {{ category.title }}
+              </option>
+            </select>
+            <button type="button" class="btn btn-success" (click)="toggleCategoryCreation()">
+              <i class="fas fa-plus"></i> New Category
+            </button>
+          </div>
+        </div>
+        <!-- Sezione per creare una nuova categoria -->
+        <div class="mb-3" *ngIf="isCreatingCategory">
+          <label for="newCategoryTitle" class="form-label">New Category</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="newCategoryTitle" [(ngModel)]="newCategory.title" name="newCategoryTitle" placeholder="Inserisci il titolo della nuova categoria" required>
+            <button type="button" class="btn btn-primary" (click)="createCategory()">
+              <i class="fas fa-check"></i> Add
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeUpdateProductModal()">Close</button>
+          <button type="submit" class="btn btn-primary">Update Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal per l'aggiornamento della categoria -->
+<div class="modal mt-5" [ngClass]="{'show': isUpdateCategoryModalOpen}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Category</h5>
+        <button type="button" class="btn-close" (click)="closeUpdateCategoryModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onUpdateCategorySubmit()">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Category Title" [(ngModel)]="selectedCategory.title" name="title" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeUpdateCategoryModal()">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal per aggiornare lo stato dell'ordine -->
+<div class="modal mt-5" [ngClass]="{'show': isUpdateOrderModalOpen}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Order Status</h5>
+        <button type="button" class="btn-close" (click)="closeUpdateOrderModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onUpdateOrderStatusSubmit()">
+          <div class="input-group mb-3">
+            <label>Order ID:</label>
+            <span class="m-auto"><strong>{{selectedOrder.sequId}}</strong></span>
+          </div>
+          <div class="input-group mb-3">
+            <label>Current Status:</label>
+            <span class="m-auto"><strong>{{selectedOrder.status}}</strong></span>
+          </div>
+          <div class="input-group mb-3">
+            <label>New Status:</label>
+            <select 
+              class="form-select" 
+              id="orderStatus" 
+              [(ngModel)]="newOrderStatus" 
+              name="newOrderStatus" 
+              required
+            >
+              <option 
+                *ngFor="let status of ['shipped', 'delivered', 'confirm', 'cancel', 'paid']" 
+                [value]="status"
+              >
+                {{ status | titlecase }}
+              </option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeUpdateOrderModal()">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
